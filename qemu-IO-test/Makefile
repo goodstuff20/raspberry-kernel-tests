@@ -1,23 +1,25 @@
 CROSS_COMPILE = aarch64-elf-
+CC_NO_QEMU = aarch64-linux-gnu-
 CC = $(CROSS_COMPILE)gcc
+KERNEL_FILE = kernel8.img
 CFLAGS = -Wall -fno-common -O0 -g \
          -nostdlib -nostartfiles -ffreestanding \
          -march=armv8-a
 
 kernel8.img: linker.ld boot.o hello.o
-	aarch64-elf-ld boot.o hello.o -T linker.ld -o kernel8.img
-	aarch64-elf-objdump -d kernel8.img > kernel.list
-	aarch64-elf-objdump -t kernel8.img | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
+	$(CROSS_COMPILE)ld boot.o hello.o -T linker.ld -o $(KERNEL_FILE)
+	$(CROSS_COMPILE)objdump -d $(KERNEL_FILE) > kernel.list
+	$(CROSS_COMPILE)objdump -t $(KERNEL_FILE) | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
 
 boot.o: boot.S
-	aarch64-elf-gcc -c boot.S -o boot.o
+	$(CC) -c boot.S -o boot.o
 
 basicfct:
-	aarch64-linux-gnu-as -o basicfct.o basicfct.S
-	aarch64-linux-gnu-ld -s -o basicfct basicfct.o
+	$(CC_NO_QEMU)as -o basicfct.o basicfct.S
+	$(CC_NO_QEMU)ld -s -o basicfct basicfct.o
 
 clean:
-	rm -f kernel8.img *.o *.list *.sym basicfct
+	rm -f $(KERNEL_FILE) *.o *.list *.sym basicfct
 
 .PHONY: all qemu clean
 

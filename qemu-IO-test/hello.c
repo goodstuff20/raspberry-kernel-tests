@@ -153,6 +153,18 @@ void uart_puts(const char* str)
 		uart_putc((unsigned char)str[i]);
 }
 
+void uart_hex(unsigned int d) {
+    unsigned int n;
+    int c;
+    for(c=28;c>=0;c-=4) {
+        // get highest tetrad
+        n=(d>>c)&0xF;
+        // 0-9 => '0'-'9', 10-15 => 'A'-'F'
+        n+=n>9?0x37:0x30;
+        uart_putc(n);
+    }
+}
+
 #if defined(__cplusplus)
 extern "C" /* Use C linkage for kernel_main. */
 #endif
@@ -168,9 +180,17 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 	uart_init();
 	// printh();
 	uart_puts("Hello, kernel World!\r\n");
- 
-	while (1)
-		uart_putc(uart_getc());
-
 	
+	unsigned int el;
+
+    asm volatile ("mrs %0, CurrentEL" : "=r" (el));
+
+    uart_puts("Current EL is: ");
+	uart_hex((el>>2)&3);
+    uart_puts("\n");
+
+	while (1) {
+		uart_puts("\ninput: ");
+		uart_putc(uart_getc());
+	}
 }
