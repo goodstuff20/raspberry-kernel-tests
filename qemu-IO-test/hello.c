@@ -5,8 +5,6 @@
 // board type
 int raspi = 3; // raspi 4 wird noch nicht unterstuetzt
 
-// extern void printh(); // is a system call and not printf or so at the moment so won't work I assume
-
 // Memory-Mapped I/O output
 static inline void mmio_write(uint32_t reg, uint32_t data)
 {
@@ -178,16 +176,21 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 #endif
 {
 	uart_init();
-	// printh();
 	uart_puts("Hello, kernel World!\r\n");
-	
+
 	unsigned int el;
+	unsigned int scr;
 
     asm volatile ("mrs %0, CurrentEL" : "=r" (el));
 
     uart_puts("Current EL is: ");
 	uart_hex((el>>2)&3);
     uart_puts("\n");
+
+	// asm volatile (".word 0xde00\n"); // thumb illegal instruction: https://stackoverflow.com/questions/16081618/programmatically-cause-undefined-instruction-exception/33737548
+	// asm volatile (".word 0xe7f000f0\n"); // arm illegal instruction
+	// asm volatile (".word 0xe7f0def0\n"); // thumb + arm illegal instruction
+
 
 	while (1) {
 		uart_puts("\ninput: ");

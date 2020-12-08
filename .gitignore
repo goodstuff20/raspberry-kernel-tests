@@ -1,3 +1,11 @@
+# vscode stuff
+.vscode*
+
+# generated files, check if some of these are later manually created
+*.list
+*.sym
+*.img
+
 # Prerequisites
 *.d
 
