@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#include "irq.h"
  
 // board type
 int raspi = 3; // raspi 4 wird noch nicht unterstuetzt
@@ -191,6 +193,14 @@ void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 	// asm volatile (".word 0xe7f000f0\n"); // arm illegal instruction
 	// asm volatile (".word 0xe7f0def0\n"); // thumb + arm illegal instruction
 
+	//init_printf(0, putc);
+	//stdout_putf = putc;
+	//stdout_putp = 0;
+
+	irq_vector_init();
+	timer_init();
+	enable_interrupt_controller();
+	enable_irq();
 
 	while (1) {
 		uart_puts("\ninput: ");

@@ -26,29 +26,6 @@ _start:
     // set stack before our code
     ldr     x5, =_start
 
-    //TODO remove --------
-    // switch from EL3 to EL2
-    /*mov     x2, #0x5b1
-    msr     scr_el3, x2
-    mov     x2, #0x3c9
-    msr     spsr_el3, x2
-    adr     x2, 5f
-    msr     elr_el3, x2
-    eret
-
-    // switch from EL2 to EL1
-5:  mov     x0, #(1 << 31)      // AArch64
-    orr     x0, x0, #(1 << 1)   // SWIO hardwired on Pi3
-    msr     hcr_el2, x0
-    mrs     x0, hcr_el2
-    // change execution level to EL1
-    mov     x2, #0x3c4
-    msr     spsr_el2, x2
-    adr     x2, 5f
-    msr     elr_el2, x2
-    eret*/
-    //TODO remove --------
-
     /*
     (0. init; necessary?)
     1. set ElX register
@@ -57,6 +34,7 @@ _start:
     4. fake exception return call  
     exlvl check beforehand needed? 64bit should boot in E3
     */
+    
     // Initialize SCTLR_EL2 and HCR_EL2 to save values before entering EL2.
     MSR SCTLR_EL2, XZR
     MSR HCR_EL2, XZR
@@ -78,8 +56,20 @@ _start:
     MOV X0, #0b01001 // DAIF=0000
     MSR SPSR_EL3, X0 // M[4:0]=01001 EL2h must match SCR_EL3.RW
     // Determine EL2 entry.
-    ADR X0, 5f // el2_entry points to the first instruction of
+    ADR X0, goto_el1 // el2_entry points to the first instruction of
     MSR ELR_EL3, X0 // EL2 code.
+    ERET
+
+goto_el1: 
+    MSR SCTLR_EL1, XZR
+    // Determine the EL1 Execution state.
+    MRS X0, HCR_EL2
+    ORR X0, X0, #(1<<31) // RW=1 EL1 Execution state is AArch64.
+    MSR HCR_EL2, X0
+    MOV X0, #0b00101 // DAIF=0000
+    MSR SPSR_EL2, X0 // M[4:0]=00101 EL1h must match HCR_EL2.RW.
+    ADR X0, 5f // el1_entry points to the first instruction of
+    MSR ELR_EL2, X0 // EL1 code.
     ERET
 
 5:  mov     sp, x5
