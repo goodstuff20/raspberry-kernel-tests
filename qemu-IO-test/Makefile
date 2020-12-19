@@ -1,4 +1,4 @@
-CROSS_COMPILE = aarch64-elf-
+CROSS_COMPILE ?= aarch64-elf-
 CC_NO_QEMU = aarch64-linux-gnu-
 CC = $(CROSS_COMPILE)gcc
 KERNEL_FILE = kernel8.img
@@ -6,8 +6,8 @@ KERNEL_FILE = kernel8.img
          -nostdlib -nostartfiles -ffreestanding \
          -march=armv8-a \
 		 -Iinclude
-#CFLAGS = -Iinclude
-CFLAGS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
+# -mgeneral-regs-only
+CFLAGS = -Iinclude
 SFLAGS = -Iinclude
 
 C_FILES = $(wildcard src/*.c)
@@ -16,7 +16,7 @@ O_FILES = $(C_FILES:src/%.c=build/%_c.o)
 O_FILES += $(S_FILES:src/%.S=build/%_s.o)
 
 kernel8.img: src/linker.ld $(O_FILES) # boot.o hello.o
-	$(CROSS_COMPILE)ld $(O_FILES) -T src/linker.ld -o build/$(KERNEL_FILE)
+	$(CROSS_COMPILE)ld -T src/linker.ld -o build/$(KERNEL_FILE) $(O_FILES)
 	$(CROSS_COMPILE)objdump -d build/$(KERNEL_FILE) > build/kernel.list
 	$(CROSS_COMPILE)objdump -t build/$(KERNEL_FILE) | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > build/kernel.sym
 
@@ -40,10 +40,10 @@ build/%_s.o: src/%.S
 # 	$(CC_NO_QEMU)as -o basicfct.o basicfct.S
 # 	$(CC_NO_QEMU)ld -s -o basicfct basicfct.o
 
-#rm -f build/$(KERNEL_FILE) build/*.o build/*.list build/*.sym build/basicfct
+
 clean: # cannot remove a directory in windows w/o permissions...
 	rm -f build/*
-
+#rm -f build/$(KERNEL_FILE) build/*.o build/*.list build/*.sym build/basicfct
 
 .PHONY: all qemu clean
 
