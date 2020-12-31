@@ -7,13 +7,16 @@ KERNEL_FILE = kernel8.img
          -march=armv8-a \
 		 -Iinclude
 # -mgeneral-regs-only
-CFLAGS = -Iinclude
+CFLAGS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
 SFLAGS = -Iinclude
 
 C_FILES = $(wildcard src/*.c)
 S_FILES = $(wildcard src/*.S)
 O_FILES = $(C_FILES:src/%.c=build/%_c.o)
 O_FILES += $(S_FILES:src/%.S=build/%_s.o)
+
+DEP_FILES = $(O_FILES:%.o=%.d)
+-include $(DEP_FILES)
 
 kernel8.img: src/linker.ld $(O_FILES) # boot.o hello.o
 	$(CROSS_COMPILE)ld -T src/linker.ld -o build/$(KERNEL_FILE) $(O_FILES)

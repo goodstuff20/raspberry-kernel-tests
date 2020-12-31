@@ -1,5 +1,4 @@
-  
-#include "timer.h"
+  #include "timer.h"
 
 const unsigned int interval = 200000;
 unsigned int curVal = 0;

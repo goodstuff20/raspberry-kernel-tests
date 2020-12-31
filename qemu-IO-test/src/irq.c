@@ -1,4 +1,4 @@
-#include "irq.h"
+#include "c_duplicates/irq.h"
 
 void enable_interrupt_controller()
 {

@@ -1,4 +1,4 @@
-#include "irq.h"
+#include "c_duplicates/irq.h"
 
 #define TIMER_CLO       (PBASE+0x00003004)
 #define TIMER_C1        (PBASE+0x00003010)

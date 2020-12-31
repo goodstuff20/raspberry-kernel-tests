@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "irq.h"
+#include "timer.h"
  
 // board type
 int raspi = 3; // raspi 4 wird noch nicht unterstuetzt
