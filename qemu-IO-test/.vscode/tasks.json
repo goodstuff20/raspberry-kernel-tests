@@ -4,7 +4,7 @@
             "label": "Run QEMU",
             "type": "shell",
             "isBackground": true,
-            "command": "echo Starting QEMU&qemu-system-aarch64 -S -gdb tcp::9000 -M raspi3 -kernel build/kernel8.img --nographic -d int",
+            "command": "echo Starting QEMU&qemu-system-aarch64 -S -gdb tcp::1234 -M raspi3 -kernel build/kernel8.img --nographic -d int",
             "problemMatcher": {
                 "pattern": {
                     "regexp": "^(Starting QEMU)",
@@ -16,7 +16,7 @@
                     "endsPattern": "^(Starting QEMU)"
                 }
             }
-        },
+        }
     ],
     "version": "2.0.0"
 }

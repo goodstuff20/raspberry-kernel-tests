@@ -7,8 +7,8 @@ KERNEL_FILE = kernel8.img
          -march=armv8-a \
 		 -Iinclude
 # -mgeneral-regs-only
-CFLAGS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only
-SFLAGS = -Iinclude
+CFLAGS = -Wall -nostdlib -nostartfiles -ffreestanding -Iinclude -mgeneral-regs-only -g
+SFLAGS = -Iinclude -g
 
 C_FILES = $(wildcard src/*.c)
 S_FILES = $(wildcard src/*.S)

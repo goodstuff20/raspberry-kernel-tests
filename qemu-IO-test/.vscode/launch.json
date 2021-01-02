@@ -5,18 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug program",
+            "name": "Debug QEMU",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/kernel8.img",
-            "miDebuggerServerAddress": "localhost:9000",
-            "stopAtEntry": true,
-            "cwd": "${workspaceFolder}",
+            "program": "${workspaceRoot}/build/kernel8.img",
+            "miDebuggerServerAddress": "localhost:1234",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
             "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb-multiarch",
-            "preLaunchTask": "Run QEMU",
+            "externalConsole": true,
+            "launchCompleteCommand": "exec-run",
+            "linux": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "/usr/bin/gdb-multiarch"
+            }
+            //"preLaunchTask": "qemu background"
         }
     ]
 }
